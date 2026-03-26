@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yang Seojin | Backend Developer</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=Fraunces:wght@700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f9f8f5; --bg2:#ffffff; --surface:#f3f1ec; --border:#e8e3db;
+  --accent:#4f46e5; --accent2:#059669; --accent3:#d97706;
+  --text:#18181b; --muted:#6b7280;
+  --sans:'DM Sans',sans-serif; --serif:'Fraunces',serif; --mono:'DM Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);overflow-x:hidden;cursor:none;line-height:1.65;}
+.cursor{width:7px;height:7px;background:var(--accent);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);}
+.cursor-ring{width:28px;height:28px;border:1.5px solid rgba(79,70,229,.25);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .2s,height .2s;}
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-thumb{background:var(--accent);border-radius:2px;}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:.9rem 5rem;background:rgba(249,248,245,.93);backdrop-filter:blur(18px);border-bottom:1px solid var(--border);}
+.nav-logo{font-family:var(--serif);font-size:1.1rem;font-weight:700;letter-spacing:-.02em;}
+.nav-logo span{color:var(--accent);}
+.nav-links{display:flex;gap:2.2rem;list-style:none;}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:.78rem;font-weight:500;letter-spacing:.05em;text-transform:uppercase;transition:color .2s;position:relative;}
+.nav-links a::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:1.5px;background:var(--accent);transition:width .3s;}
+.nav-links a:hover{color:var(--text);}
+.nav-links a:hover::after{width:100%;}
+
+/* Hero */
+.hero{min-height:100vh;display:flex;align-items:center;padding:0 5rem;position:relative;overflow:hidden;background:var(--bg);}
+.hero-dots{position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(rgba(79,70,229,.1) 1px,transparent 1px);background-size:32px 32px;mask-image:radial-gradient(ellipse at 80% 50%,black 15%,transparent 60%);}
+.hero-blob{position:absolute;right:-5rem;top:50%;transform:translateY(-50%);width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(79,70,229,.06) 0%,transparent 70%);pointer-events:none;}
+canvas#pts{position:absolute;inset:0;pointer-events:none;z-index:0;}
+.hero-layout{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;width:100%;gap:4rem;}
+.hero-inner{max-width:580px;}
+.hero-photo-wrap{flex-shrink:0;animation:fu .5s .5s ease both;}
+.hero-photo{width:220px;height:270px;object-fit:cover;object-position:top;border-radius:16px;box-shadow:0 8px 40px rgba(79,70,229,.12),0 2px 8px rgba(0,0,0,.06);border:3px solid var(--bg2);}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(79,70,229,.07);border:1px solid rgba(79,70,229,.18);padding:.28rem .85rem;border-radius:100px;font-size:.7rem;color:var(--accent);font-weight:600;letter-spacing:.09em;text-transform:uppercase;margin-bottom:1.6rem;animation:fu .5s ease both;}
+.hero-badge::before{content:'';width:5px;height:5px;background:var(--accent2);border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.6)}}
+.hero-name{font-family:var(--serif);font-size:clamp(2.8rem,5.5vw,5rem);font-weight:900;line-height:.95;letter-spacing:-.04em;margin-bottom:1.3rem;animation:fu .5s .1s ease both;}
+.hero-name em{color:var(--accent);font-style:normal;}
+.hero-desc{font-size:.92rem;color:var(--muted);line-height:1.85;max-width:460px;margin-bottom:2.2rem;animation:fu .5s .2s ease both;}
+.hero-desc strong{color:var(--text);font-weight:600;}
+.hero-cta{display:flex;gap:.9rem;flex-wrap:wrap;animation:fu .5s .3s ease both;}
+.btn{padding:.6rem 1.5rem;border-radius:6px;font-family:var(--sans);font-size:.8rem;font-weight:600;text-decoration:none;transition:all .2s;cursor:none;}
+.btn-primary{background:var(--accent);color:#fff;border:1.5px solid var(--accent);}
+.btn-primary:hover{background:#3730a3;}
+.btn-ghost{background:transparent;color:var(--muted);border:1.5px solid var(--border);}
+.btn-ghost:hover{border-color:var(--accent);color:var(--text);}
+.hero-stats{display:flex;gap:2rem;margin-top:2.2rem;animation:fu .5s .4s ease both;}
+.stat{padding-right:1.5rem;border-right:1.5px solid var(--border);}
+.stat:last-child{border-right:none;}
+.stat-n{font-family:var(--serif);font-size:1.7rem;font-weight:900;line-height:1;}
+.stat-n span{color:var(--accent);}
+.stat-l{font-size:.63rem;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin-top:.2rem;}
+@keyframes fu{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* Section */
+section{padding:6rem 5rem;}
+.sec-label{font-size:.68rem;color:var(--accent);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.8rem;display:flex;align-items:center;gap:.7rem;}
+.sec-label::before{content:'';flex:0 0 22px;height:1.5px;background:var(--accent);}
+.sec-title{font-family:var(--serif);font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:900;letter-spacing:-.03em;line-height:1.05;margin-bottom:3.5rem;}
+.reveal{opacity:0;transform:translateY(24px);transition:all .65s ease;}
+.reveal.on{opacity:1;transform:translateY(0);}
+
+/* About grid */
+.about-wrap{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start;}
+
+/* Timeline */
+.tl{position:relative;padding-left:1.8rem;}
+.tl::before{content:'';position:absolute;left:0;top:.4rem;bottom:0;width:1.5px;background:linear-gradient(to bottom,var(--accent),rgba(79,70,229,.04));}
+.tl-item{position:relative;margin-bottom:2.2rem;}
+.tl-dot{position:absolute;left:-2.15rem;top:.35rem;width:9px;height:9px;border-radius:50%;background:var(--bg2);border:2px solid var(--accent);transition:background .2s;}
+.tl-item:hover .tl-dot{background:var(--accent);}
+.tl-period{font-family:var(--mono);font-size:.67rem;color:var(--accent);letter-spacing:.05em;margin-bottom:.3rem;}
+.tl-title{font-weight:700;font-size:.95rem;margin-bottom:.15rem;}
+.tl-sub{font-size:.79rem;color:var(--muted);margin-bottom:.5rem;}
+.tl-items{list-style:none;display:flex;flex-direction:column;gap:.3rem;}
+.tl-items li{font-size:.79rem;color:var(--muted);padding-left:.9rem;position:relative;}
+.tl-items li::before{content:'→';position:absolute;left:0;color:var(--accent2);font-size:.7rem;}
+.tl-badge{display:inline-flex;align-items:center;gap:.35rem;font-size:.68rem;padding:.2rem .65rem;border-radius:100px;margin-top:.5rem;font-weight:600;}
+.badge-gold{background:rgba(217,119,6,.08);color:var(--accent3);border:1px solid rgba(217,119,6,.2);}
+.badge-green{background:rgba(5,150,105,.08);color:var(--accent2);border:1px solid rgba(5,150,105,.2);}
+
+/* Certs */
+.cert-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem;}
+.cert-card{display:flex;align-items:center;gap:.75rem;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:.75rem 1rem;font-size:.81rem;transition:border-color .2s;}
+.cert-card:hover{border-color:var(--accent);}
+.cert-icon{font-size:1rem;}
+.cert-name{flex:1;font-weight:500;}
+.cert-date{font-family:var(--mono);font-size:.63rem;color:var(--muted);}
+.cert-s{font-size:.63rem;padding:.17rem .52rem;border-radius:100px;font-weight:600;}
+.cert-s.done{background:rgba(5,150,105,.08);color:var(--accent2);}
+.cert-s.pend{background:rgba(217,119,6,.08);color:var(--accent3);}
+
+/* Skills */
+.skill-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;}
+.skill-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.3rem;transition:all .25s;position:relative;overflow:hidden;}
+.skill-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),#818cf8);transform:scaleX(0);transform-origin:left;transition:transform .3s;}
+.skill-card:hover{border-color:rgba(79,70,229,.25);transform:translateY(-2px);}
+.skill-card:hover::before{transform:scaleX(1);}
+.skill-cat{font-size:.66rem;color:var(--accent);letter-spacing:.12em;text-transform:uppercase;font-weight:600;margin-bottom:.9rem;}
+.tags{display:flex;flex-wrap:wrap;gap:.42rem;}
+.tag{padding:.23rem .62rem;border-radius:4px;font-size:.72rem;background:var(--bg2);border:1px solid var(--border);color:var(--text);}
+.tag.hi{background:rgba(79,70,229,.07);border-color:rgba(79,70,229,.18);color:var(--accent);}
+
+/* Bars */
+.bar-wrap{display:flex;flex-direction:column;gap:1rem;max-width:500px;margin-top:3.5rem;}
+.bar-item{}
+.bar-hd{display:flex;justify-content:space-between;margin-bottom:.33rem;}
+.bar-name{font-size:.8rem;font-weight:500;}
+.bar-pct{font-family:var(--mono);font-size:.68rem;color:var(--accent);}
+.bar-track{height:3px;background:var(--border);border-radius:2px;overflow:hidden;}
+.bar-fill{height:100%;width:0;border-radius:2px;background:linear-gradient(90deg,var(--accent),#818cf8);transition:width 1.3s cubic-bezier(.4,0,.2,1);}
+
+/* Projects */
+.proj-list{display:flex;flex-direction:column;gap:1.3rem;}
+.proj-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.8rem 2rem;display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:start;transition:all .25s;position:relative;}
+.proj-card:hover{border-color:rgba(79,70,229,.28);box-shadow:0 4px 24px rgba(79,70,229,.05);}
+.proj-card.feat{border-color:rgba(79,70,229,.22);background:linear-gradient(135deg,rgba(79,70,229,.025),var(--bg2));}
+.feat-badge{position:absolute;top:0;right:0;background:var(--accent);color:#fff;font-size:.62rem;padding:.25rem .75rem;border-radius:0 10px 0 7px;font-weight:600;letter-spacing:.06em;}
+.proj-num{font-family:var(--mono);font-size:.64rem;color:var(--muted);margin-bottom:.6rem;}
+.proj-name{font-family:var(--serif);font-size:1.2rem;font-weight:700;letter-spacing:-.02em;margin-bottom:.35rem;}
+.proj-period{font-family:var(--mono);font-size:.66rem;color:var(--accent2);margin-bottom:.5rem;}
+.proj-desc{font-size:.83rem;color:var(--muted);line-height:1.7;margin-bottom:.9rem;}
+.proj-hl{list-style:none;display:flex;flex-direction:column;gap:.33rem;}
+.proj-hl li{font-size:.79rem;color:var(--muted);padding-left:.9rem;position:relative;}
+.proj-hl li::before{content:'→';position:absolute;left:0;color:var(--accent2);font-size:.68rem;}
+.proj-tags{display:flex;flex-wrap:wrap;gap:.38rem;margin-top:1rem;}
+.proj-award{display:inline-flex;align-items:center;gap:.4rem;font-size:.74rem;color:var(--accent3);padding:.38rem .85rem;border:1px solid rgba(217,119,6,.2);border-radius:100px;background:rgba(217,119,6,.05);white-space:nowrap;align-self:flex-start;font-weight:600;}
+
+/* Contact */
+.contact-inner{max-width:540px;margin:0 auto;text-align:center;}
+.contact-desc{color:var(--muted);font-size:.9rem;line-height:1.8;margin-bottom:2.4rem;}
+.contact-links{display:flex;justify-content:center;gap:.85rem;flex-wrap:wrap;}
+.contact-link{display:flex;align-items:center;gap:.5rem;padding:.65rem 1.3rem;border:1.5px solid var(--border);border-radius:7px;color:var(--muted);text-decoration:none;font-size:.79rem;font-weight:500;transition:all .2s;}
+.contact-link:hover{border-color:var(--accent);color:var(--text);}
+
+footer{padding:1.8rem 5rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:.72rem;color:var(--muted);}
+
+@media(max-width:768px){
+  nav{padding:.9rem 1.5rem;} .nav-links{display:none;}
+  section{padding:4rem 1.5rem;} .hero{padding:6rem 1.5rem 3rem;}
+  .hero-stats,.hero-dots,.hero-blob,canvas#pts{display:none;}
+  .about-wrap{grid-template-columns:1fr;gap:3rem;}
+  .skill-grid{grid-template-columns:1fr;}
+  .proj-card{grid-template-columns:1fr;} .cert-grid{grid-template-columns:1fr;}
+  footer{flex-direction:column;gap:.8rem;text-align:center;padding:1.5rem;}
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cur"></div>
+<div class="cursor-ring" id="ring"></div>
+
+<nav>
+  <div class="nav-logo">yang<span>.</span>dev</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- Hero -->
+<section class="hero" id="home">
+  <canvas id="pts"></canvas>
+  <div class="hero-dots"></div>
+  <div class="hero-blob"></div>
+  <div class="hero-layout">
+    <div class="hero-inner">
+      <div class="hero-badge">Backend Developer</div>
+      <h1 class="hero-name">Seojin<br><em>Yang</em></h1>
+      <p class="hero-desc">
+        <strong>Java / Spring Boot</strong> 기반 백엔드 개발자입니다.<br>
+        결제 시스템 설계부터 서버 자동화까지,<br>
+        실제 동작하는 서비스를 만드는 것에 집중합니다.<br><br>
+        KB국민은행 금융 개발자 과정 <strong>우수훈련생</strong> 선정,<br>
+        핀테크 해커톤 수상 · 캡스톤디자인 인기상 보유.
+      </p>
+      <div class="hero-cta">
+        <a href="#projects" class="btn btn-primary">View Projects</a>
+        <a href="#contact" class="btn btn-ghost">Contact</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><div class="stat-n">4<span>+</span></div><div class="stat-l">Projects</div></div>
+        <div class="stat"><div class="stat-n">2<span>🏆</span></div><div class="stat-l">Awards</div></div>
+        <div class="stat"><div class="stat-n">4<span>+</span></div><div class="stat-l">Certs</div></div>
+      </div>
+    </div>
+    <div class="hero-photo-wrap">
+      <img src="profile.jpg" alt="Yang Seojin" class="hero-photo">
+    </div>
+  </div>
+</section>
+
+<!-- About / Education / Career -->
+<section id="about" style="background:var(--bg2);">
+  <div class="sec-label">About</div>
+  <h2 class="sec-title">Education & Career</h2>
+  <div class="about-wrap reveal">
+
+    <div>
+      <p style="font-size:.9rem;color:var(--muted);line-height:1.9;margin-bottom:2.2rem;">
+        결제 시스템 설계부터 서버 자동화까지,<br>
+        <strong style="color:var(--text);">실제 동작하는 서비스를 만드는 것</strong>에 집중합니다.<br><br>
+        KB국민은행 금융 개발자 과정 <strong style="color:var(--text);">우수훈련생</strong>으로 선정되었고,<br>
+        핀테크 해커톤 수상과 캡스톤디자인 인기상 경험을 보유하고 있습니다.<br><br>
+        현재 <strong style="color:var(--text);">인젠트 데이터 플랫폼 개발자</strong>로 커리어를 시작하며<br>
+        클라우드와 데이터 엔지니어링 역량을 확장하고 있습니다.
+      </p>
+
+      <div class="sec-label" style="margin-bottom:1.2rem;">Education</div>
+      <div class="tl">
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-period">2020.03 – 2026.02</div>
+          <div class="tl-title">아주대학교 소프트웨어학과</div>
+          <div class="tl-sub">학점 3.43 / 4.5 · 경기도 수원</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-period">2026.03.13 – 2026.03.28</div>
+          <div class="tl-title">2026 AJOU AWS 새싹 프로그램</div>
+          <div class="tl-sub">AWS 센터필드 본사 오프라인 교육</div>
+          <ul class="tl-items">
+            <li>S3 정적 웹 배포, EC2 인스턴스 생성 및 웹서버 구축</li>
+            <li>RDS 연동, Lambda 서버리스, AWS Bedrock (Nova) AI 활용</li>
+            <li>3티어 아키텍처 기반 AI 앱 설계 및 배포 실습</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="sec-label" style="margin-top:2.5rem;margin-bottom:1.2rem;">Training</div>
+      <div class="tl">
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-period">2025.03.04 – 2025.08.21</div>
+          <div class="tl-title">KB IT's Your Life 금융권 개발자 양성과정</div>
+          <div class="tl-sub">KB국민은행 × 고용노동부 · 풀스택 개발 과정</div>
+          <ul class="tl-items">
+            <li>Java 백엔드, Spring Framework, MySQL, DB 모델링</li>
+            <li>Vue.js 프론트엔드, 자료구조/알고리즘 코딩테스트 대비</li>
+            <li>금융 도메인 종합 실무 프로젝트 (부동산 정보 플랫폼)</li>
+          </ul>
+          <span class="tl-badge badge-green">🏅 이 달의 우수훈련생 선정 (2025.05)</span>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="sec-label" style="margin-bottom:1.2rem;">Career</div>
+      <div class="tl">
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-period">2026.04.01 – 현재</div>
+          <div class="tl-title">인젠트 · DW/DL/AI 데이터플랫폼 개발</div>
+          <div class="tl-sub">초급 개발자 · eXperDB 데이터 플랫폼</div>
+          <ul class="tl-items">
+            <li>데이터 수집/적재 모듈 개발 및 배치 작업 구현</li>
+            <li>온프레미스/컨테이너 환경 운영 이슈 대응</li>
+          </ul>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-period">2024.07 – 2024.08</div>
+          <div class="tl-title">LS웨어 · 백엔드 개발 인턴</div>
+          <div class="tl-sub">제품전략본부 인턴십 · 연매출 136억</div>
+          <ul class="tl-items">
+            <li>Linux (RedHat/Debian) OS EOS 점검 및 커널 버전 분석</li>
+            <li>rpm/dpkg 기반 패키지 정보 수집 Shell 스크립트 자동화</li>
+            <li>Windows Server cmd/PowerShell 자동화 파일 작성</li>
+            <li>Black Duck 활용 오픈소스 CVE 취약점 점검 및 보고서 정리</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="sec-label" style="margin-top:2.5rem;margin-bottom:1.2rem;">Certifications</div>
+      <div class="cert-grid">
+        <div class="cert-card"><span class="cert-icon">📋</span><span class="cert-name">정보처리기사</span><span class="cert-date">2025.12</span><span class="cert-s done">취득</span></div>
+        <div class="cert-card"><span class="cert-icon">🗄️</span><span class="cert-name">SQLD</span><span class="cert-date">—</span><span class="cert-s done">취득</span></div>
+        <div class="cert-card"><span class="cert-icon">📊</span><span class="cert-name">ADsP</span><span class="cert-date">2025.06</span><span class="cert-s done">취득</span></div>
+        <div class="cert-card"><span class="cert-icon">🔬</span><span class="cert-name">빅데이터분석기사</span><span class="cert-date">2026.04 예정</span><span class="cert-s pend">예정</span></div>
+        <div class="cert-card"><span class="cert-icon">☁️</span><span class="cert-name">AWS SAA</span><span class="cert-date">취득 예정</span><span class="cert-s pend">예정</span></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Skills -->
+<section id="skills" style="background:var(--surface);">
+  <div class="sec-label">Tech Stack</div>
+  <h2 class="sec-title">Skills</h2>
+  <div class="skill-grid reveal">
+    <div class="skill-card"><div class="skill-cat">Backend</div><div class="tags"><span class="tag hi">Java</span><span class="tag hi">Spring Boot</span><span class="tag">Spring MVC</span><span class="tag">JPA / MyBatis</span><span class="tag">REST API</span></div></div>
+    <div class="skill-card"><div class="skill-cat">Database</div><div class="tags"><span class="tag hi">SQL</span><span class="tag hi">MySQL</span><span class="tag">PostgreSQL</span><span class="tag">Redis</span><span class="tag">DB Modeling</span></div></div>
+    <div class="skill-card"><div class="skill-cat">Infra / DevOps</div><div class="tags"><span class="tag hi">Docker</span><span class="tag hi">Nginx</span><span class="tag">GitHub Actions</span><span class="tag">CI/CD</span><span class="tag">Linux</span><span class="tag">AWS EC2/S3</span></div></div>
+    <div class="skill-card"><div class="skill-cat">Data / Batch</div><div class="tags"><span class="tag">DW / DL</span><span class="tag">ETL Pipeline</span><span class="tag">Spring Batch</span><span class="tag">Shell Script</span></div></div>
+    <div class="skill-card"><div class="skill-cat">External / API</div><div class="tags"><span class="tag hi">PortOne</span><span class="tag hi">KakaoPay</span><span class="tag">STOMP</span><span class="tag">Swagger</span><span class="tag">DeepL / Google Map</span></div></div>
+    <div class="skill-card"><div class="skill-cat">Security / Tools</div><div class="tags"><span class="tag">Certbot / HTTPS</span><span class="tag">Black Duck</span><span class="tag">CVE 분석</span><span class="tag">Git / GitHub</span></div></div>
+  </div>
+  <div class="bar-wrap reveal" id="bars">
+    <div class="sec-label" style="margin-bottom:1.4rem;">Proficiency</div>
+    <div class="bar-item" data-p="88"><div class="bar-hd"><span class="bar-name">Java / Spring Boot</span><span class="bar-pct">88%</span></div><div class="bar-track"><div class="bar-fill"></div></div></div>
+    <div class="bar-item" data-p="78"><div class="bar-hd"><span class="bar-name">Docker / Nginx / CI·CD</span><span class="bar-pct">78%</span></div><div class="bar-track"><div class="bar-fill"></div></div></div>
+    <div class="bar-item" data-p="72"><div class="bar-hd"><span class="bar-name">SQL / DB Modeling</span><span class="bar-pct">72%</span></div><div class="bar-track"><div class="bar-fill"></div></div></div>
+    <div class="bar-item" data-p="65"><div class="bar-hd"><span class="bar-name">Redis / Caching</span><span class="bar-pct">65%</span></div><div class="bar-track"><div class="bar-fill"></div></div></div>
+    <div class="bar-item" data-p="45"><div class="bar-hd"><span class="bar-name">AWS / Cloud (학습 중)</span><span class="bar-pct">45%</span></div><div class="bar-track"><div class="bar-fill"></div></div></div>
+  </div>
+</section>
+
+<!-- Projects -->
+<section id="projects" style="background:var(--bg2);">
+  <div class="sec-label">Work</div>
+  <h2 class="sec-title">Projects</h2>
+  <div class="proj-list">
+
+    <div class="proj-card feat reveal">
+      <div class="feat-badge">⭐ 대표 프로젝트</div>
+      <div>
+        <div class="proj-num">01 / FINTECH · KB IT's Your Life 최종 프로젝트</div>
+        <div class="proj-name">반의 반 집</div>
+        <div class="proj-period">2025.07 – 2025.08</div>
+        <p class="proj-desc">부동산 소액투자 플랫폼. 결제 신뢰성 확보와 서버 자동화에 집중한 핀테크 프로젝트입니다.</p>
+        <ul class="proj-hl">
+          <li>PortOne + KakaoPay Webhook 비동기 수신 + 서버 단 동기 재검증 이중검증으로 결제 위변조 방지</li>
+          <li>GitHub Actions CI/CD 파이프라인 구축으로 자동 배포 환경 구성</li>
+          <li>Docker 컨테이너화 + Nginx Reverse Proxy API Gateway 설정</li>
+          <li>AWS EC2 인스턴스 운영, Certbot HTTPS 인증서 적용</li>
+        </ul>
+        <div class="proj-tags">
+          <span class="tag hi">Java</span><span class="tag hi">Spring Boot</span><span class="tag">PortOne</span><span class="tag">KakaoPay</span><span class="tag">Docker</span><span class="tag">Nginx</span><span class="tag">GitHub Actions</span><span class="tag">AWS EC2</span><span class="tag">MySQL</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="proj-card reveal">
+      <div>
+        <div class="proj-num">02 / PLATFORM · 아주대학교 캡스톤디자인</div>
+        <div class="proj-name">UNI</div>
+        <div class="proj-period">2024.09 – 2024.12</div>
+        <p class="proj-desc">한국 대학생과 유학생 간 교류를 위한 매칭 플랫폼. 백엔드 및 인프라 담당.</p>
+        <ul class="proj-hl">
+          <li>프로필 / QnA / 리뷰 / 신고 기능 및 대학 메일 인증(univcert) API 연동</li>
+          <li>DeepL 번역 API, Google Map API 연동으로 언어/문화 장벽 해소</li>
+          <li>AWS S3 이미지 저장, CloudFront + React 정적 파일 서빙</li>
+          <li>GitHub Actions CI/CD, AWS EC2 Docker 백엔드 배포</li>
+        </ul>
+        <div class="proj-tags">
+          <span class="tag hi">Java</span><span class="tag hi">Spring Boot</span><span class="tag">MySQL</span><span class="tag">AWS S3</span><span class="tag">CloudFront</span><span class="tag">EC2</span><span class="tag">DeepL API</span><span class="tag">React</span>
+        </div>
+      </div>
+      <div class="proj-award">🏆 2024-2 Ajou SoftCon 인기상</div>
+    </div>
+
+    <div class="proj-card reveal">
+      <div>
+        <div class="proj-num">03 / FINTECH</div>
+        <div class="proj-name">IT's Okay to Lose</div>
+        <div class="proj-period">2025.06 – 2025.07</div>
+        <p class="proj-desc">모의투자 플랫폼. 실시간 호가창 구현과 주문/체결 로직 설계에 집중했습니다.</p>
+        <ul class="proj-hl">
+          <li>Redis 기반 호가창 캐싱으로 실시간 데이터 처리 성능 개선</li>
+          <li>주문/체결 로직 설계 및 DB 모델링</li>
+          <li>Swagger 기반 API 문서화</li>
+        </ul>
+        <div class="proj-tags">
+          <span class="tag hi">Java</span><span class="tag hi">Spring Boot</span><span class="tag">Redis</span><span class="tag">MySQL</span><span class="tag">Swagger</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="proj-card reveal">
+      <div>
+        <div class="proj-num">04 / FINTECH · KB IT's Your Life 해커톤</div>
+        <div class="proj-name">안심뱅크</div>
+        <div class="proj-period">2025.09.10 – 2025.09.12</div>
+        <p class="proj-desc">금융 취약계층을 위한 핀테크 서비스. STOMP 기반 실시간 송금 위험 알림 구현.</p>
+        <ul class="proj-hl">
+          <li>STOMP 프로토콜 기반 실시간 송금 위험 알림 시스템 구현</li>
+          <li>48시간 해커톤에서 기획 · 개발 · 발표 전 과정 참여</li>
+        </ul>
+        <div class="proj-tags">
+          <span class="tag hi">Java</span><span class="tag hi">Spring Boot</span><span class="tag">STOMP</span><span class="tag">WebSocket</span>
+        </div>
+      </div>
+      <div class="proj-award">🏆 KB 해커톤 장려상</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Contact -->
+<section id="contact" style="background:var(--surface);">
+  <div class="contact-inner">
+    <div class="sec-label" style="justify-content:center;">Contact</div>
+    <h2 class="sec-title" style="margin-bottom:1.2rem;">Get In Touch</h2>
+    <p class="contact-desc reveal">새로운 기회나 협업 제안을 환영합니다.<br>편하게 연락 주세요.</p>
+    <div class="contact-links reveal">
+      <a href="mailto:yangyangseoseo@gmail.com" class="contact-link">📧 yangyangseoseo@gmail.com</a>
+      <a href="https://github.com/yourgithub" class="contact-link" target="_blank">🐙 GitHub</a>
+      <a href="https://linkedin.com/in/yourlinkedin" class="contact-link" target="_blank">💼 LinkedIn</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>© 2026 Yang Seojin · Backend Developer</span>
+  <span style="color:var(--accent);font-family:var(--mono);font-size:.68rem;">Built with HTML · Hosted on AWS S3</span>
+</footer>
+
+<script>
+// Cursor
+const cur=document.getElementById('cur'),ring=document.getElementById('ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.transform=`translate(${mx-3.5}px,${my-3.5}px)`;});
+(function ar(){rx+=(mx-rx-14)*.13;ry+=(my-ry-14)*.13;ring.style.transform=`translate(${rx}px,${ry}px)`;requestAnimationFrame(ar);})();
+document.querySelectorAll('a,button').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{ring.style.width='42px';ring.style.height='42px';});
+  el.addEventListener('mouseleave',()=>{ring.style.width='28px';ring.style.height='28px';});
+});
+
+// Particles
+const cv=document.getElementById('pts'),cx2=cv.getContext('2d');
+let W,H,pts=[];
+function rsz(){W=cv.width=cv.offsetWidth;H=cv.height=cv.offsetHeight;}rsz();window.addEventListener('resize',rsz);
+class P{constructor(){this.r();}r(){this.x=Math.random()*W;this.y=Math.random()*H;this.vx=(Math.random()-.5)*.18;this.vy=(Math.random()-.5)*.18;this.a=Math.random()*.2+.04;}u(){this.x+=this.vx;this.y+=this.vy;if(this.x<0||this.x>W||this.y<0||this.y>H)this.r();}d(){cx2.beginPath();cx2.arc(this.x,this.y,1,0,Math.PI*2);cx2.fillStyle=`rgba(79,70,229,${this.a})`;cx2.fill();}}
+for(let i=0;i<40;i++)pts.push(new P());
+(function ap(){cx2.clearRect(0,0,W,H);pts.forEach(p=>{p.u();p.d();});for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<95){cx2.beginPath();cx2.moveTo(pts[i].x,pts[i].y);cx2.lineTo(pts[j].x,pts[j].y);cx2.strokeStyle=`rgba(79,70,229,${.07*(1-d/95)})`;cx2.lineWidth=.5;cx2.stroke();}}requestAnimationFrame(ap);})();
+
+// Skill bars
+const bo=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting){document.querySelectorAll('.bar-item').forEach(it=>{it.querySelector('.bar-fill').style.width=it.dataset.p+'%';});bo.disconnect();}});},{threshold:.3});
+const bel=document.getElementById('bars');if(bel)bo.observe(bel);
+
+// Reveal
+const ro=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting)el.target.classList.add('on');});},{threshold:.07});
+document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
+
+// Nav highlight
+const secs=document.querySelectorAll('section[id]'),nls=document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll',()=>{let c='';secs.forEach(s=>{if(window.scrollY>=s.offsetTop-180)c=s.id;});nls.forEach(a=>{a.style.color=a.getAttribute('href')==='#'+c?'var(--text)':'';});});
+</script>
+</body>
+</html>
